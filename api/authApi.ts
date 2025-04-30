@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import { IUserLogin } from "@/models/IUserLogin";
 export const authApi = {
   login: async (username: string, password: string) => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -21,11 +21,11 @@ export const authApi = {
     await AsyncStorage.removeItem("password");
   },
 
-  getUser: async () => {
+  getUser: async (): Promise<IUserLogin> => {
     const username = await AsyncStorage.getItem("username");
     const password = await AsyncStorage.getItem("password");
 
-    return { username, password };
+    return { username: username!, password: password! };
   },
 
   register: async (username: string, password: string) => {

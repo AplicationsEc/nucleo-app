@@ -12,7 +12,8 @@ export default function LoginScreen() {
   const { data: user, isLoading } = useGetUser();
 
   useEffect(() => {
-    if (isLoading == false && user) {
+    const userName = user?.username;
+    if (isLoading == false && userName) {
       router.push("/(tabs)");
     }
   }, [isLoading]);
