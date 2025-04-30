@@ -1,4 +1,10 @@
-import { StyleSheet, TextInput, TouchableOpacity } from "react-native";
+import {
+  Image,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { useEffect, useState } from "react";
 
 import { ThemedText } from "@/components/ThemedText";
@@ -6,6 +12,8 @@ import { ThemedView } from "@/components/ThemedView";
 import { authApi } from "@/api/authApi";
 import { router } from "expo-router";
 import { useGetUser } from "@/hooks/auth/useAuthUser";
+import { HelloWave } from "@/components/HelloWave";
+import { LogoSvg } from "@/components/svgs/logosvg";
 export default function LoginScreen() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -23,8 +31,12 @@ export default function LoginScreen() {
       alert("Please enter a username and password");
       return;
     }
-    await authApi.login(username, password);
-    router.push("/(tabs)");
+    const res = await authApi.login(username, password);
+    if (res.success) {
+      router.push("/(tabs)");
+    } else {
+      alert(res.message);
+    }
   };
 
   if (isLoading) {
@@ -34,9 +46,14 @@ export default function LoginScreen() {
   return (
     <ThemedView style={styles.container}>
       <ThemedView style={styles.formContainer}>
-        <ThemedText type="title" style={styles.title}>
-          Login
-        </ThemedText>
+        <View style={styles.logoContainer}>
+          {/* <HelloWave /> */}
+          {/* <Image
+            source={require("../../assets/images/react-logo.png")}
+            style={styles.logo}
+          /> */}
+          <LogoSvg width={100} height={100} color="white" />
+        </View>
 
         <TextInput
           style={styles.input}
@@ -57,7 +74,7 @@ export default function LoginScreen() {
         />
 
         <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-          <ThemedText style={styles.buttonText}>Sign In</ThemedText>
+          <ThemedText style={styles.buttonText}>Iniciar sesión</ThemedText>
         </TouchableOpacity>
       </ThemedView>
     </ThemedView>
@@ -71,12 +88,26 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 20,
   },
+  logo: {
+    width: 100,
+    height: 100,
+    marginBottom: 20,
+  },
+  logoContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 20,
+  },
   formContainer: {
     width: "100%",
     maxWidth: 400,
-    padding: 20,
+    paddingBottom: 40,
+    paddingTop: 40,
+    paddingLeft: 20,
+    paddingRight: 20,
     borderRadius: 10,
     backgroundColor: "#1a1a1a",
+    elevation: 10,
   },
   title: {
     textAlign: "center",

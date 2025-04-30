@@ -11,6 +11,7 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 import { IconButton } from "react-native-paper";
 import { Menu } from "react-native-paper";
 import { authApi } from "@/api/authApi";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -49,32 +50,23 @@ export default function TabLayout() {
             <Menu.Item onPress={() => cerrarSesion()} title="Cerrar sesión" />
           </Menu>
         ),
-
-        // headerRight: () => (
-        //   <TouchableOpacity
-        //     style={{ marginRight: 15 }}
-        //     onPress={() => console.log("Settings pressed")}
-        //   >
-        //     <Ionicons name="settings-outline" size={24} color="white" />
-        //   </TouchableOpacity>
-        // ),
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
-          title: "Home",
+          title: "Agregar productos",
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="house.fill" color={color} />
+            <Ionicons name="add-circle-outline" size={24} color={color} />
           ),
         }}
       />
       <Tabs.Screen
         name="explore"
         options={{
-          title: "Explore",
+          title: "Productos cargados",
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="paperplane.fill" color={color} />
+            <Ionicons name="list-outline" size={24} color={color} />
           ),
         }}
       />
