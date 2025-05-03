@@ -19,7 +19,6 @@ export default function TabLayout() {
 
   const cerrarSesion = async () => {
     await authApi.logout();
-    //setMenuVisible(false);
     router.replace("/(auth)");
   };
   return (
@@ -55,9 +54,9 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "Agregar productos",
+          title: "Inicio",
           tabBarIcon: ({ color }) => (
-            <Ionicons name="add-circle-outline" size={24} color={color} />
+            <Ionicons name="home" size={24} color={color} />
           ),
         }}
       />
