@@ -13,7 +13,14 @@ const Drawer = createDrawerNavigator<DrawerParamList>();
 export default function DrawerNavigator() {
   return (
     <Drawer.Navigator initialRouteName="Home">
-      <Drawer.Screen name="Home" component={HomeScreen} />
+      <Drawer.Screen
+        options={{
+          title: "Inicio",
+          headerShown: true,
+        }}
+        name="Home"
+        component={HomeScreen}
+      />
       <Drawer.Screen name="Profile" component={ProfileScreen} />
     </Drawer.Navigator>
   );
