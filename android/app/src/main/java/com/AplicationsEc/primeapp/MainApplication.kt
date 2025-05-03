@@ -1,4 +1,4 @@
-package com.AplicationsEc.primeapp
+package com.aplicationsec.primeapp
 
 import android.app.Application
 import android.content.res.Configuration

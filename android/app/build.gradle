@@ -86,9 +86,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace 'com.AplicationsEc.primeapp'
+    namespace 'com.aplicationsec.primeapp'
     defaultConfig {
-        applicationId 'com.AplicationsEc.primeapp'
+        applicationId 'com.aplicationsec.primeapp'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
