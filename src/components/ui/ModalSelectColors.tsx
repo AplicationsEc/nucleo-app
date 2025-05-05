@@ -1,4 +1,4 @@
-import { _COLORES } from "@/src/utils/constants";
+import { _COLORES_BASICOS } from "@/src/utils/constants";
 import React, { useState } from "react";
 import {
   Modal,
@@ -8,9 +8,10 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { Text, TextInput, Button } from "react-native-paper";
-const COLORES_LIST = Object.entries(_COLORES).map(([label, value]) => ({
-  label,
-  value,
+
+const COLORES_LIST = _COLORES_BASICOS.map((color) => ({
+  label: color.label,
+  value: color.value,
 }));
 
 interface Props {
@@ -25,7 +26,6 @@ export default function ModalSelectorConFiltro({
   onSelect,
 }: Props) {
   const [search, setSearch] = useState("");
-
   const filtered = COLORES_LIST.filter((color) =>
     color.label.toLowerCase().includes(search.toLowerCase())
   );
@@ -38,10 +38,11 @@ export default function ModalSelectorConFiltro({
 
           <TextInput
             placeholder="Buscar color..."
+            placeholderTextColor="black" // ← más visible o personalizado
             value={search}
             onChangeText={setSearch}
             mode="outlined"
-            style={{ marginBottom: 12 }}
+            style={{ backgroundColor: "white", marginBottom: 12 }}
           />
 
           <FlatList
@@ -58,9 +59,13 @@ export default function ModalSelectorConFiltro({
                 }}
               >
                 <View
-                  style={[styles.colorCircle, { backgroundColor: item.value }]}
+                  key={item.value}
+                  style={[
+                    styles.colorCircle,
+                    { backgroundColor: item.value ?? "#FFFFF" },
+                  ]}
                 />
-                <Text>{item.label}</Text>
+                <Text style={{ color: "black" }}>{item.label}</Text>
               </TouchableOpacity>
             )}
             contentContainerStyle={{ paddingBottom: 12 }}
@@ -93,6 +98,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     marginBottom: 12,
+    color: "black",
   },
   item: {
     flexDirection: "row",

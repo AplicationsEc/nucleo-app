@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import RNPickerSelect from "react-native-picker-select";
 import {
   View,
@@ -14,8 +14,7 @@ import * as ImagePicker from "expo-image-picker";
 import { Ionicons } from "@expo/vector-icons";
 import { IProducto } from "@/src/models/IProducto";
 import { Switch } from "react-native"; // ...
-import { _BOTONES, _COLORES } from "@/src/utils/constants";
-import ColorPicker from "@/src/components/ColorPiker";
+import { _BOTONES, _COLORES_BASICOS } from "@/src/utils/constants";
 import ModalSelectorConFiltro from "@/src/components/ui/ModalSelectColors";
 import { Button } from "react-native-paper";
 interface Props {
@@ -42,11 +41,8 @@ export default function ProductoEditarScreen({ route, navigation }: Props) {
     route.params?.producto ?? productoVacio
   );
   const [modalColor1Visible, setModalColor1Visible] = useState(false);
-
-  const COLORES_LIST = Object.entries(_COLORES).map(([nombre, hex]) => ({
-    label: nombre,
-    value: hex,
-  }));
+  const [modalColor2Visible, setModalColor2Visible] = useState(false);
+  const [modalColor3Visible, setModalColor3Visible] = useState(false);
 
   const handleChange = (field: keyof IProducto, value: any) => {
     setForm({ ...form, [field]: value });
@@ -80,6 +76,11 @@ export default function ProductoEditarScreen({ route, navigation }: Props) {
     Alert.alert(editando ? "Producto actualizado" : "Producto creado");
     navigation.goBack();
   };
+
+  const obtenerColor = useCallback((color?: string) => {
+    if (!color) return null;
+    return _COLORES_BASICOS.find((c) => c.value === color);
+  }, []);
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -157,30 +158,30 @@ export default function ProductoEditarScreen({ route, navigation }: Props) {
         value={form.largo?.toString() ?? ""}
         onChangeText={(text) => handleChange("largo", parseFloat(text) || 0)}
       />
-      <Text style={styles.label}>Color 1</Text>
-      <Button mode="outlined" onPress={() => setModalColor1Visible(true)}>
-        {form.color1 || "Seleccionar color 1"}
-      </Button>
-      {/* <View style={{ flexDirection: "row", gap: 8 }}>
-        <TextInput
-          style={[styles.input, { flex: 1 }]}
-          placeholder="Color 1 (#hex)"
-          value={form.color1}
-          onChangeText={(text) => handleChange("color1", text)}
-        />
-        <TextInput
-          style={[styles.input, { flex: 1 }]}
-          placeholder="Color 2 (#hex)"
-          value={form.color2}
-          onChangeText={(text) => handleChange("color2", text)}
-        />
-        <TextInput
-          style={[styles.input, { flex: 1 }]}
-          placeholder="Color 3 (#hex)"
-          value={form.color3}
-          onChangeText={(text) => handleChange("color3", text)}
-        />
-      </View> */}
+      <Text style={styles.label}>Colores</Text>
+      <View style={{ flexDirection: "row", gap: 8 }}>
+        <Button
+          mode="outlined"
+          onPress={() => {
+            setModalColor1Visible(true);
+          }}
+        >
+          <Text style={{ color: obtenerColor(form.color1)?.value }}>
+            {obtenerColor(form.color1)?.label || "Color 1"}
+          </Text>
+        </Button>
+        <Button mode="outlined" onPress={() => setModalColor2Visible(true)}>
+          <Text style={{ color: obtenerColor(form.color2)?.value }}>
+            {obtenerColor(form.color2)?.label || "Color 2"}
+          </Text>
+        </Button>
+        <Button mode="outlined" onPress={() => setModalColor3Visible(true)}>
+          <Text style={{ color: obtenerColor(form.color3)?.value }}>
+            {obtenerColor(form.color3)?.label || "Color 3"}
+          </Text>
+        </Button>
+      </View>
+
       <View style={styles.switchRow}>
         <Text>Activo</Text>
         <Switch
@@ -213,6 +214,16 @@ export default function ProductoEditarScreen({ route, navigation }: Props) {
         visible={modalColor1Visible}
         onClose={() => setModalColor1Visible(false)}
         onSelect={(val) => handleChange("color1", val)}
+      />
+      <ModalSelectorConFiltro
+        visible={modalColor2Visible}
+        onClose={() => setModalColor2Visible(false)}
+        onSelect={(val) => handleChange("color2", val)}
+      />
+      <ModalSelectorConFiltro
+        visible={modalColor3Visible}
+        onClose={() => setModalColor3Visible(false)}
+        onSelect={(val) => handleChange("color3", val)}
       />
     </ScrollView>
   );
