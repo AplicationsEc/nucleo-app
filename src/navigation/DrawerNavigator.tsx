@@ -2,10 +2,13 @@ import React from "react";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import HomeScreen from "../screens/home/HomeScreen";
 import ProfileScreen from "../screens/profile/ProfileScreen";
+import ProductosTabs from "./ProductosTabs";
+import { colors } from "../theme/colors";
 
 export type DrawerParamList = {
   Home: undefined;
   Profile: undefined;
+  Productos: undefined;
 };
 
 const Drawer = createDrawerNavigator<DrawerParamList>();
@@ -16,11 +19,11 @@ export default function DrawerNavigator() {
       initialRouteName="Home"
       screenOptions={{
         drawerStyle: {
-          backgroundColor: "black", // 🎨 Fondo del drawer
+          backgroundColor: colors.background.primary,
         },
-        drawerActiveTintColor: "#fff", // ✅ Color del texto activo
-        drawerInactiveTintColor: "#ccc", // ✅ Color del texto inactivo
-        drawerActiveBackgroundColor: "#1f1f1f", // ✅ Fondo del ítem activo
+        drawerActiveTintColor: colors.text.primary,
+        drawerInactiveTintColor: colors.text.secondary,
+        drawerActiveBackgroundColor: colors.background.secondary,
       }}
     >
       <Drawer.Screen
@@ -28,23 +31,36 @@ export default function DrawerNavigator() {
           title: "Inicio",
           headerShown: true,
           headerStyle: {
-            backgroundColor: "black",
+            backgroundColor: colors.background.primary,
           },
-          headerTintColor: "white",
+          headerTintColor: colors.text.primary,
         }}
         name="Home"
         component={HomeScreen}
+      />
+
+      <Drawer.Screen
+        name="Productos"
+        component={ProductosTabs}
+        options={{
+          title: "Productos",
+          headerShown: true,
+          headerStyle: {
+            backgroundColor: colors.background.primary,
+          },
+          headerTintColor: colors.text.primary,
+        }}
       />
       <Drawer.Screen
         name="Profile"
         component={ProfileScreen}
         options={{
-          title: "Inicio",
+          title: "Configuración",
           headerShown: true,
           headerStyle: {
-            backgroundColor: "black",
+            backgroundColor: colors.background.primary,
           },
-          headerTintColor: "white",
+          headerTintColor: colors.text.primary,
         }}
       />
     </Drawer.Navigator>
