@@ -3,21 +3,42 @@ import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 
 import { Ionicons } from "@expo/vector-icons";
 import { IProducto } from "@/src/models/IProducto";
+import { useProductosDBEliminar } from "@/src/database/services/productos-db/useProductosDBEliminar";
 
 interface Props {
   producto: IProducto;
   onPress?: () => void;
+  viewEliminar: boolean;
 }
 
-export default function ProductoCard({ producto, onPress }: Props) {
+export default function ProductoCard({
+  producto,
+  onPress,
+  viewEliminar = false,
+}: Props) {
+  const { mutate: eliminarProducto, isPending } = useProductosDBEliminar();
+
+  const handleEliminar = () => {
+    eliminarProducto({ id: producto.id });
+  };
+
   return (
-    <TouchableOpacity style={styles.card} onPress={onPress}>
+    <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.8}>
       {producto.imagenUrl ? (
         <Image source={{ uri: producto.imagenUrl }} style={styles.imagen} />
       ) : (
         <View style={styles.placeholder}>
           <Ionicons name="image-outline" size={40} color="#ccc" />
         </View>
+      )}
+      {viewEliminar && (
+        <TouchableOpacity
+          style={styles.btnEliminar}
+          onPress={handleEliminar}
+          disabled={isPending}
+        >
+          <Ionicons name="trash" size={20} color="#e63946" />
+        </TouchableOpacity>
       )}
       <View style={styles.info}>
         <Text style={styles.nombre} numberOfLines={2}>
@@ -85,5 +106,15 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 4,
     right: 4,
+  },
+  btnEliminar: {
+    position: "absolute",
+    top: 8,
+    right: 8,
+    backgroundColor: "#fff",
+    padding: 4,
+    borderRadius: 20,
+    elevation: 3,
+    zIndex: 1,
   },
 });

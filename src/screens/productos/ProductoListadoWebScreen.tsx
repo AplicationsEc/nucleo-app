@@ -18,6 +18,7 @@ export default function ProductoListadoWebScreen() {
         renderItem={({ item }) => (
           <ProductoCard
             producto={item}
+            viewEliminar={false}
             onPress={() => {
               setProductoSeleccionado(item);
               setModalVisible(true);

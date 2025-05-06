@@ -15,7 +15,7 @@ export const useProudctosDBList = (
     return await productosDB.obtenerProductos();
   };
   return useQuery({
-    queryKey: ["productos", "list"],
+    queryKey: ["productos-db", "list"],
     queryFn: getProductos,
     ...queryOptions,
   });

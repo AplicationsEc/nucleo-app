@@ -2,7 +2,6 @@ import ModalProducto from "@/src/components/Productos/ModalProducto";
 import ProductoCard from "@/src/components/Productos/ProductoCard";
 import { useProudctosDBList } from "@/src/database/services/productos-db/useProudctosDBList";
 import { IProducto } from "@/src/models/IProducto";
-import { useProudctosList } from "@/src/services/productos/useProudctosList";
 import { useState } from "react";
 import { View, Text, FlatList } from "react-native";
 
@@ -19,6 +18,7 @@ export default function ProductosAddRecientes() {
         renderItem={({ item }) => (
           <ProductoCard
             producto={item}
+            viewEliminar={true}
             onPress={() => {
               setProductoSeleccionado(item);
               setModalVisible(true);

@@ -21,3 +21,7 @@ export interface IProducto {
   color2?: string;
   color3?: string;
 }
+
+export interface IProductoDBEliminar {
+  id: number;
+}

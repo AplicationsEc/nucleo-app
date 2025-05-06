@@ -1,4 +1,4 @@
-import { IProducto } from "../models/IProducto";
+import { IProducto, IProductoDBEliminar } from "../models/IProducto";
 import db from "./db";
 
 export const productosDB = {
@@ -100,5 +100,19 @@ export const productosDB = {
       favorito: p.favorito === 1,
       carrito: p.carrito === 1,
     }));
+  },
+
+  eliminarProducto: async (data: IProductoDBEliminar) => {
+    if (!db) throw new Error("La base de datos no ha sido inicializada");
+
+    const result = await db.runAsync(`DELETE FROM productos WHERE id = ?`, [
+      data.id,
+    ]);
+    const res: any = result;
+
+    return res;
+
+    // console.log(`Producto eliminado. Cambios: ${result.changes}`);
+    // return result.changes > 0;
   },
 };

@@ -1,5 +1,5 @@
 export const productosDBKeys = {
-  all: () => ["productos"] as const,
+  all: () => ["productos-db"] as const,
   list: () => [...productosDBKeys.all(), "list"] as const,
   detail: (id: string) => [...productosDBKeys.all(), "detail", id] as const,
   profilter: () => [...productosDBKeys.all(), "pro"] as const,
