@@ -5,7 +5,7 @@ import { useProudctosList } from "@/src/services/productos/useProudctosList";
 import { useState } from "react";
 import { View, Text, FlatList } from "react-native";
 
-export default function ProductoListadoScreen() {
+export default function ProductoListadoWebScreen() {
   const [productoSeleccionado, setProductoSeleccionado] =
     useState<IProducto | null>(null);
   const [modalVisible, setModalVisible] = useState(false);

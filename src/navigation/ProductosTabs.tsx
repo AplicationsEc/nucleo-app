@@ -5,7 +5,9 @@ import { LinearGradient } from "expo-linear-gradient";
 import { StyleSheet } from "react-native";
 
 import ProductoNuevoScreen from "../screens/productos/ProductoNuevoScreen";
-import ProductoListadoScreen from "../screens/productos/ProductoListadoScreen";
+import ProductoListadoScreen from "../screens/productos/ProductoListadoWebScreen";
+import ProductoListadoWebScreen from "../screens/productos/ProductoListadoWebScreen";
+import ProductosAddRecientes from "../screens/productos/ProductosAddRecientes";
 
 const Tab = createBottomTabNavigator();
 
@@ -32,11 +34,11 @@ export default function ProductosTabs() {
       }}
     >
       <Tab.Screen
-        name="Listado"
-        component={ProductoListadoScreen}
+        name="Listado Web"
+        component={ProductoListadoWebScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="list-outline" size={size} color={color} />
+            <Ionicons name="cloud-done-sharp" size={size} color={color} />
           ),
         }}
       />
@@ -46,6 +48,15 @@ export default function ProductosTabs() {
         options={{
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="add-circle-outline" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Por Subir"
+        component={ProductosAddRecientes}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="list-circle-outline" size={size} color={color} />
           ),
         }}
       />

@@ -17,6 +17,7 @@ import { Switch } from "react-native"; // ...
 import { _BOTONES, _COLORES_BASICOS } from "@/src/utils/constants";
 import ModalSelectorConFiltro from "@/src/components/ui/ModalSelectColors";
 import { Button } from "react-native-paper";
+import { useProductosDBCreate } from "@/src/database/services/productos-db/useProductosDBCreate";
 interface Props {
   route: {
     params?: {
@@ -40,6 +41,9 @@ export default function ProductoEditarScreen({ route, navigation }: Props) {
   const [form, setForm] = useState<IProducto>(
     route.params?.producto ?? productoVacio
   );
+
+  const { mutate: crearProductoDB, isPending: isCreating } =
+    useProductosDBCreate();
   const [modalColor1Visible, setModalColor1Visible] = useState(false);
   const [modalColor2Visible, setModalColor2Visible] = useState(false);
   const [modalColor3Visible, setModalColor3Visible] = useState(false);
@@ -71,10 +75,11 @@ export default function ProductoEditarScreen({ route, navigation }: Props) {
     } else {
       // POST a tu backend
       console.log("Creando producto:", form);
+      crearProductoDB(form);
     }
 
     Alert.alert(editando ? "Producto actualizado" : "Producto creado");
-    navigation.goBack();
+    //navigation.goBack();
   };
 
   const obtenerColor = useCallback((color?: string) => {

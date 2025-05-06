@@ -8,7 +8,7 @@ export interface IProducto {
   stock: number;
   marca?: string;
   modelo?: string;
-  tamaño?: string;
+  tamano?: string;
   peso?: number;
   alto?: number;
   ancho?: number;
