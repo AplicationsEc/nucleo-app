@@ -18,6 +18,7 @@ import { _BOTONES, _COLORES_BASICOS } from "@/src/utils/constants";
 import ModalSelectorConFiltro from "@/src/components/ui/ModalSelectColors";
 import { Button } from "react-native-paper";
 import { useProductosDBCreate } from "@/src/database/services/productos-db/useProductosDBCreate";
+import ModalTomarFotoCargarFoto from "@/src/components/ui/ModalTomarFotoCargarFoto";
 interface Props {
   route: {
     params?: {
@@ -41,7 +42,8 @@ export default function ProductoEditarScreen({ route, navigation }: Props) {
   const [form, setForm] = useState<IProducto>(
     route.params?.producto ?? productoVacio
   );
-
+  const [modalTomarFotoCargarFotoVisible, setModalTomarFotoCargarFotoVisible] =
+    useState(false);
   const { mutate: crearProductoDB, isPending: isCreating } =
     useProductosDBCreate();
   const [modalColor1Visible, setModalColor1Visible] = useState(false);
@@ -60,6 +62,7 @@ export default function ProductoEditarScreen({ route, navigation }: Props) {
 
     if (!result.canceled) {
       handleChange("imagenUrl", result.assets[0].uri);
+      setModalTomarFotoCargarFotoVisible(false);
     }
   };
 
@@ -87,18 +90,36 @@ export default function ProductoEditarScreen({ route, navigation }: Props) {
     return _COLORES_BASICOS.find((c) => c.value === color);
   }, []);
 
+  const tomarFoto = async () => {
+    const result = await ImagePicker.launchCameraAsync({
+      allowsEditing: true,
+      quality: 0.7,
+    });
+
+    if (!result.canceled) {
+      const uri = result.assets[0].uri;
+      setForm((prev) => ({ ...prev, imagenUrl: uri }));
+      setModalTomarFotoCargarFotoVisible(false);
+    }
+  };
+
+  const handleTomarFoto = () => {
+    setModalTomarFotoCargarFotoVisible(true);
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.titulo}>
         {editando ? "Editar Producto" : "Nuevo Producto"}
       </Text>
-      <TouchableOpacity onPress={pickImage} style={styles.imagePicker}>
+      <TouchableOpacity onPress={handleTomarFoto} style={styles.imagePicker}>
         {form.imagenUrl ? (
           <Image source={{ uri: form.imagenUrl }} style={styles.imagen} />
         ) : (
           <Ionicons name="camera-outline" size={50} color="#888" />
         )}
       </TouchableOpacity>
+
       <TextInput
         style={styles.input}
         placeholder="Nombre"
@@ -229,6 +250,12 @@ export default function ProductoEditarScreen({ route, navigation }: Props) {
         visible={modalColor3Visible}
         onClose={() => setModalColor3Visible(false)}
         onSelect={(val) => handleChange("color3", val)}
+      />
+      <ModalTomarFotoCargarFoto
+        visible={modalTomarFotoCargarFotoVisible}
+        onClose={() => setModalTomarFotoCargarFotoVisible(false)}
+        onSelectGallery={pickImage}
+        onSelectCamera={tomarFoto}
       />
     </ScrollView>
   );
