@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 
 import { Ionicons } from "@expo/vector-icons";
 import { IProducto } from "@/src/models/IProducto";
 import { useProductosDBEliminar } from "@/src/database/services/productos-db/useProductosDBEliminar";
+import ModalConfirmarAccion from "../ui/ModalConfirmarAccion";
 
 interface Props {
   producto: IProducto;
@@ -17,47 +18,65 @@ export default function ProductoCard({
   viewEliminar = false,
 }: Props) {
   const { mutate: eliminarProducto, isPending } = useProductosDBEliminar();
-
+  const [modalVisible, setModalVisible] = useState(false);
+  const handleEliminarConfirmar = () => {
+    setModalVisible(true);
+  };
   const handleEliminar = () => {
     eliminarProducto({ id: producto.id });
+    setModalVisible(false);
   };
-
   return (
-    <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.8}>
-      {producto.imagenUrl ? (
-        <Image source={{ uri: producto.imagenUrl }} style={styles.imagen} />
-      ) : (
-        <View style={styles.placeholder}>
-          <Ionicons name="image-outline" size={40} color="#ccc" />
+    <View style={{ flex: 1 }}>
+      <TouchableOpacity
+        style={styles.card}
+        onPress={onPress}
+        activeOpacity={0.8}
+      >
+        {producto.imagenUrl ? (
+          <Image source={{ uri: producto.imagenUrl }} style={styles.imagen} />
+        ) : (
+          <View style={styles.placeholder}>
+            <Ionicons name="image-outline" size={40} color="#ccc" />
+          </View>
+        )}
+        {viewEliminar && (
+          <TouchableOpacity
+            style={styles.btnEliminar}
+            onPress={handleEliminarConfirmar}
+            disabled={isPending}
+          >
+            <Ionicons name="trash" size={20} color="#e63946" />
+          </TouchableOpacity>
+        )}
+        <View style={styles.info}>
+          <Text style={styles.nombre} numberOfLines={2}>
+            {producto.nombre}
+          </Text>
+          <Text style={styles.precio}>${producto.precio.toFixed(2)}</Text>
+          {producto.descuento && (
+            <Text style={styles.descuento}>-{producto.descuento}%</Text>
+          )}
+          {producto.favorito && (
+            <Ionicons
+              name="heart"
+              size={16}
+              color="#e63946"
+              style={styles.iconFavorito}
+            />
+          )}
         </View>
+      </TouchableOpacity>
+      {modalVisible && (
+        <ModalConfirmarAccion
+          visible={modalVisible}
+          titulo="Eliminar producto"
+          mensaje="¿Estás seguro de querer eliminar este producto?"
+          onConfirmar={handleEliminar}
+          onCancelar={() => setModalVisible(false)}
+        />
       )}
-      {viewEliminar && (
-        <TouchableOpacity
-          style={styles.btnEliminar}
-          onPress={handleEliminar}
-          disabled={isPending}
-        >
-          <Ionicons name="trash" size={20} color="#e63946" />
-        </TouchableOpacity>
-      )}
-      <View style={styles.info}>
-        <Text style={styles.nombre} numberOfLines={2}>
-          {producto.nombre}
-        </Text>
-        <Text style={styles.precio}>${producto.precio.toFixed(2)}</Text>
-        {producto.descuento && (
-          <Text style={styles.descuento}>-{producto.descuento}%</Text>
-        )}
-        {producto.favorito && (
-          <Ionicons
-            name="heart"
-            size={16}
-            color="#e63946"
-            style={styles.iconFavorito}
-          />
-        )}
-      </View>
-    </TouchableOpacity>
+    </View>
   );
 }
 
