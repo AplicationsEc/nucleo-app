@@ -80,6 +80,7 @@ export const productosDB = {
     );
 
     console.log("Producto actualizado con ID:", producto.id);
+    return producto.id;
   },
 
   obtenerProductos: async (): Promise<IProducto[]> => {

@@ -19,6 +19,7 @@ import ModalSelectorConFiltro from "@/src/components/ui/ModalSelectColors";
 import { Button } from "react-native-paper";
 import { useProductosDBCreate } from "@/src/database/services/productos-db/useProductosDBCreate";
 import ModalTomarFotoCargarFoto from "@/src/components/ui/ModalTomarFotoCargarFoto";
+import { useProductosDBActualizar } from "@/src/database/services/productos-db/useProductosDBActualizar";
 interface Props {
   producto?: IProducto;
   onSuccess: () => void;
@@ -45,6 +46,8 @@ export default function FormularioProductos({
     useState(false);
   const { mutate: crearProductoDB, isPending: isCreating } =
     useProductosDBCreate();
+  const { mutate: actualizarProductoDB, isPending: isUpdating } =
+    useProductosDBActualizar();
   const [modalColor1Visible, setModalColor1Visible] = useState(false);
   const [modalColor2Visible, setModalColor2Visible] = useState(false);
   const [modalColor3Visible, setModalColor3Visible] = useState(false);
@@ -80,13 +83,18 @@ export default function FormularioProductos({
     if (editando) {
       // PUT a tu backend
       console.log("Actualizando producto:", form);
+      actualizarProductoDB(form, {
+        onSuccess: () => {
+          Alert.alert("Producto actualizado");
+          onSuccess();
+        },
+      });
     } else {
       // POST a tu backend
       console.log("Creando producto:", form);
       crearProductoDB(form, {
         onSuccess: () => {
           Alert.alert("Producto creado");
-          //navigation.goBack();
         },
         onError: (error) => {
           Alert.alert("Error al crear producto");
