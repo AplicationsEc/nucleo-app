@@ -65,10 +65,17 @@ export default function ProductoCard({
           <Text style={styles.nombre} numberOfLines={2}>
             {producto.nombre}
           </Text>
-          <Text style={styles.precio}>${producto.precio.toFixed(2)}</Text>
-          {producto.descuento && (
+          <Text style={styles.precio}>
+            $
+            {typeof producto.precio === "number"
+              ? producto.precio.toFixed(2)
+              : "0.00"}
+          </Text>
+
+          {typeof producto.descuento === "number" && (
             <Text style={styles.descuento}>-{producto.descuento}%</Text>
           )}
+
           {producto.favorito && (
             <Ionicons
               name="heart"

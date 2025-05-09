@@ -20,6 +20,7 @@ export interface IProducto {
   color1?: string;
   color2?: string;
   color3?: string;
+  sincronizado?: boolean;
 }
 
 export interface IProductoDBEliminar {

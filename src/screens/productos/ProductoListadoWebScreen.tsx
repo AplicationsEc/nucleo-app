@@ -1,5 +1,6 @@
 import ModalProducto from "@/src/components/Productos/ModalProducto";
 import ProductoCard from "@/src/components/Productos/ProductoCard";
+import { useProudctosDBList } from "@/src/database/services/productos-db/useProudctosDBList";
 import { IProducto } from "@/src/models/IProducto";
 import { useProudctosList } from "@/src/services/productos/useProudctosList";
 import { useState } from "react";
@@ -9,7 +10,7 @@ export default function ProductoListadoWebScreen() {
   const [productoSeleccionado, setProductoSeleccionado] =
     useState<IProducto | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
-  const { data, isLoading, error } = useProudctosList();
+  const { data } = useProudctosDBList();
 
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
@@ -19,7 +20,7 @@ export default function ProductoListadoWebScreen() {
           <ProductoCard
             producto={item}
             viewEliminar={false}
-            viewBtnEditar={false}
+            viewBtnEditar={true}
             onPress={() => {
               setProductoSeleccionado(item);
               setModalVisible(true);
