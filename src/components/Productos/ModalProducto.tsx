@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Modal,
   View,
@@ -12,6 +12,7 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 
 import { IProducto } from "@/src/models/IProducto";
+import ModalImagenCompleta from "../Modals/ModalImagenCompleta";
 
 interface Props {
   visible: boolean;
@@ -22,6 +23,8 @@ interface Props {
 const { width } = Dimensions.get("window");
 
 export default function ModalProducto({ visible, producto, onClose }: Props) {
+  const [modalImagenCompletaVisible, setModalImagenCompletaVisible] =
+    useState(false);
   if (!producto) return null;
 
   return (
@@ -31,13 +34,16 @@ export default function ModalProducto({ visible, producto, onClose }: Props) {
           <TouchableOpacity onPress={onClose} style={styles.btnCerrar}>
             <Ionicons name="close" size={24} color="#333" />
           </TouchableOpacity>
-
           {producto.imagenUrl && (
             <View>
-              <Image
-                source={{ uri: producto.imagenUrl }}
-                style={styles.imagen}
-              />
+              <TouchableOpacity
+                onPress={() => setModalImagenCompletaVisible(true)}
+              >
+                <Image
+                  source={{ uri: producto.imagenUrl }}
+                  style={styles.imagen}
+                />
+              </TouchableOpacity>
 
               {/* Botón Editar */}
               <TouchableOpacity
@@ -72,7 +78,7 @@ export default function ModalProducto({ visible, producto, onClose }: Props) {
             </View>
             <View style={styles.row}>
               <Text style={styles.label}>Tamaño:</Text>
-              <Text>{producto.tamaño || "N/A"}</Text>
+              <Text>{producto.tamano || "N/A"}</Text>
             </View>
             <View style={styles.row}>
               <Text style={styles.label}>Peso:</Text>
@@ -111,6 +117,13 @@ export default function ModalProducto({ visible, producto, onClose }: Props) {
           </ScrollView>
         </View>
       </View>
+      {modalImagenCompletaVisible && producto.imagenUrl && (
+        <ModalImagenCompleta
+          visible={modalImagenCompletaVisible}
+          onClose={() => setModalImagenCompletaVisible(false)}
+          imageUri={producto.imagenUrl}
+        />
+      )}
     </Modal>
   );
 }

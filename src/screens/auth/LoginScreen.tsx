@@ -9,10 +9,20 @@ import {
 import { useAuth } from "../../context/AuthContext";
 import { Button, Card, Icon, Text, TextInput } from "react-native-paper";
 import { Dimensions } from "react-native";
+import { autenticarHuella } from "../../api/localAuth";
+
 const { width, height } = Dimensions.get("window");
+
 export default function LoginScreen() {
   const [formasLogin, setFormasLogin] = useState<string>("");
   const { login } = useAuth();
+
+  const handleLogin = async () => {
+    const resultado = await autenticarHuella();
+    if (resultado) {
+      login();
+    }
+  };
 
   return (
     <ImageBackground
@@ -100,7 +110,10 @@ export default function LoginScreen() {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.button}
-            onPress={() => setFormasLogin("FINGERPRINT")}
+            onPress={() => {
+              //setFormasLogin("FINGERPRINT");
+              handleLogin();
+            }}
           >
             <Icon source="fingerprint" size={36} color="white" />
           </TouchableOpacity>

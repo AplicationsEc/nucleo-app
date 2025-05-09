@@ -46,6 +46,7 @@ export default function ProductosTabs() {
         name="Nuevo"
         component={ProductoNuevoScreen}
         options={{
+          title: "Nuevo Producto",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="add-circle-outline" size={size} color={color} />
           ),

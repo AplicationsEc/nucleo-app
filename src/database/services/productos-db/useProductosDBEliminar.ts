@@ -3,7 +3,6 @@ import {
   UseMutationOptions,
   useQueryClient,
 } from "@tanstack/react-query";
-import { AxiosError } from "axios";
 import { productosDB } from "../../productosDB";
 import { productosDBKeys } from "./productosDBKeys";
 import { IProductoDBEliminar } from "@/src/models/IProducto";

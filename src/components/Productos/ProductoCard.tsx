@@ -5,18 +5,22 @@ import { Ionicons } from "@expo/vector-icons";
 import { IProducto } from "@/src/models/IProducto";
 import { useProductosDBEliminar } from "@/src/database/services/productos-db/useProductosDBEliminar";
 import ModalConfirmarAccion from "../ui/ModalConfirmarAccion";
+import ModalEditarProducto from "./ModalEditarProducto";
 
 interface Props {
   producto: IProducto;
   onPress?: () => void;
   viewEliminar: boolean;
+  viewBtnEditar: boolean;
 }
 
 export default function ProductoCard({
   producto,
   onPress,
   viewEliminar = false,
+  viewBtnEditar = false,
 }: Props) {
+  const [modalEditarVisible, setModalEditarVisible] = useState(false);
   const { mutate: eliminarProducto, isPending } = useProductosDBEliminar();
   const [modalVisible, setModalVisible] = useState(false);
   const handleEliminarConfirmar = () => {
@@ -25,6 +29,9 @@ export default function ProductoCard({
   const handleEliminar = () => {
     eliminarProducto({ id: producto.id });
     setModalVisible(false);
+  };
+  const handleEditar = () => {
+    setModalEditarVisible(true);
   };
   return (
     <View style={{ flex: 1 }}>
@@ -39,6 +46,11 @@ export default function ProductoCard({
           <View style={styles.placeholder}>
             <Ionicons name="image-outline" size={40} color="#ccc" />
           </View>
+        )}
+        {viewBtnEditar && (
+          <TouchableOpacity style={styles.btnEditar} onPress={handleEditar}>
+            <Ionicons name="create-outline" size={20} color="#333" />
+          </TouchableOpacity>
         )}
         {viewEliminar && (
           <TouchableOpacity
@@ -74,6 +86,13 @@ export default function ProductoCard({
           mensaje="¿Estás seguro de querer eliminar este producto?"
           onConfirmar={handleEliminar}
           onCancelar={() => setModalVisible(false)}
+        />
+      )}
+      {modalEditarVisible && (
+        <ModalEditarProducto
+          visible={modalEditarVisible}
+          onClose={() => setModalEditarVisible(false)}
+          producto={producto}
         />
       )}
     </View>
@@ -130,6 +149,16 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 8,
     right: 8,
+    backgroundColor: "#fff",
+    padding: 4,
+    borderRadius: 20,
+    elevation: 3,
+    zIndex: 1,
+  },
+  btnEditar: {
+    position: "absolute",
+    top: 8,
+    left: 8,
     backgroundColor: "#fff",
     padding: 4,
     borderRadius: 20,

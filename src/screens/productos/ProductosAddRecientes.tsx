@@ -19,6 +19,7 @@ export default function ProductosAddRecientes() {
           <ProductoCard
             producto={item}
             viewEliminar={true}
+            viewBtnEditar={true}
             onPress={() => {
               setProductoSeleccionado(item);
               setModalVisible(true);
