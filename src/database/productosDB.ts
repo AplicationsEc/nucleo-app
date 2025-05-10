@@ -1,5 +1,5 @@
 import { IProducto, IProductoDBEliminar } from "../models/IProducto";
-import db from "./db";
+import { db } from "./initDB";
 
 export const productosDB = {
   insertarProductos: async (producto: IProducto) => {
@@ -27,15 +27,16 @@ export const productosDB = {
       producto.color1 ?? "",
       producto.color2 ?? "",
       producto.color3 ?? "",
+      producto.sincronizado ? 1 : 0,
     ];
 
     try {
       const result = await db.runAsync(
         `INSERT INTO productos (
-          nombre, pro_uuid, descripcion, precio, imagenUrl, categoria, stock,
+          nombre, proUuId, descripcion, precio, imagenUrl, categoria, stock,
           marca, modelo, tamano, peso, alto, ancho, largo, activo,
-          descuento, favorito, carrito, color1, color2, color3
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+          descuento, favorito, carrito, color1, color2, color3, sincronizado
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)`,
         values
       );
       console.log("Producto insertado con ID:", result.lastInsertRowId);
@@ -50,7 +51,7 @@ export const productosDB = {
     if (!db) throw new Error("La base de datos no ha sido inicializada");
     if (!producto.id)
       throw new Error("El producto debe tener un ID para actualizar");
-
+    if (!producto.proUuId) return;
     const values = [
       producto.nombre,
       producto.descripcion || "",
@@ -72,40 +73,29 @@ export const productosDB = {
       producto.color1 || "",
       producto.color2 || "",
       producto.color3 || "",
-      producto.id,
+      0,
+      producto.proUuId,
     ];
 
     await db.runAsync(
       `UPDATE productos SET
         nombre = ?, descripcion = ?, precio = ?, imagenUrl = ?, categoria = ?, stock = ?,
         marca = ?, modelo = ?, tamano = ?, peso = ?, alto = ?, ancho = ?, largo = ?,
-        activo = ?, descuento = ?, favorito = ?, carrito = ?, color1 = ?, color2 = ?, color3 = ?
-        WHERE id = ?`,
+        activo = ?, descuento = ?, favorito = ?, carrito = ?, color1 = ?, color2 = ?, color3 = ?, sincronizado = ?
+        WHERE proUuId = ?`,
       values
     );
 
-    console.log("Producto actualizado con ID:", producto.id);
+    console.log("Producto actualizado con ID:", producto);
     return producto.id;
   },
 
   obtenerProductos: async (): Promise<IProducto[]> => {
     if (!db) throw new Error("La base de datos no ha sido inicializada");
 
-    interface DBProducto
-      extends Omit<IProducto, "activo" | "favorito" | "carrito"> {
-      activo: number;
-      favorito: number;
-      carrito: number;
-    }
+    const rows = await db.getAllAsync<IProducto>("SELECT * FROM productos");
 
-    const rows = await db.getAllAsync<DBProducto>("SELECT * FROM productos");
-
-    return rows.map((p) => ({
-      ...p,
-      activo: p.activo === 1,
-      favorito: p.favorito === 1,
-      carrito: p.carrito === 1,
-    }));
+    return rows;
   },
 
   eliminarProducto: async (data: IProductoDBEliminar) => {
@@ -133,18 +123,10 @@ export const productosDB = {
 
   obtenerProductosPorUuIds: async (uuIds: string[]): Promise<string[]> => {
     if (!db) throw new Error("DB no inicializada");
-
-    const resulaaaaaaa = await db.getFirstAsync<{ sql: string }>(
-      "SELECT sql FROM sqlite_master WHERE type='table' AND name='productos';"
-    );
-
-    console.log("Definición de la tabla productos:\n", resulaaaaaaa?.sql);
-    const result = await db.getAllAsync<IProducto>(
-      `SELECT pro_uuid FROM productos WHERE pro_uuid IN (${uuIds.map(() => "?").join(",")})`
-    );
+    const sql = `SELECT proUuId FROM productos WHERE proUuId IN (${uuIds.map(() => "?").join(",")})`;
+    const result = await db.getAllAsync<IProducto>(sql, uuIds);
 
     const res = result.map((p) => p.proUuId).filter((p) => p !== undefined);
-
     return res;
   },
 };

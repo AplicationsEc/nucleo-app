@@ -47,20 +47,6 @@ export default function ProductoCard({
             <Ionicons name="image-outline" size={40} color="#ccc" />
           </View>
         )}
-        {viewBtnEditar && (
-          <TouchableOpacity style={styles.btnEditar} onPress={handleEditar}>
-            <Ionicons name="create-outline" size={20} color="#333" />
-          </TouchableOpacity>
-        )}
-        {viewEliminar && (
-          <TouchableOpacity
-            style={styles.btnEliminar}
-            onPress={handleEliminarConfirmar}
-            disabled={isPending}
-          >
-            <Ionicons name="trash" size={20} color="#e63946" />
-          </TouchableOpacity>
-        )}
         <View style={styles.info}>
           <Text style={styles.nombre} numberOfLines={2}>
             {producto.nombre}
@@ -75,16 +61,21 @@ export default function ProductoCard({
           {typeof producto.descuento === "number" && (
             <Text style={styles.descuento}>-{producto.descuento}%</Text>
           )}
-
-          {producto.favorito && (
-            <Ionicons
-              name="heart"
-              size={16}
-              color="#e63946"
-              style={styles.iconFavorito}
-            />
-          )}
         </View>
+        {viewBtnEditar && (
+          <TouchableOpacity style={styles.btnEditar} onPress={handleEditar}>
+            <Ionicons name="create-outline" size={20} color="#333" />
+          </TouchableOpacity>
+        )}
+        {viewEliminar && (
+          <TouchableOpacity
+            style={styles.btnEliminar}
+            onPress={handleEliminarConfirmar}
+            disabled={isPending}
+          >
+            <Ionicons name="trash" size={20} color="#e63946" />
+          </TouchableOpacity>
+        )}
       </TouchableOpacity>
       {modalVisible && (
         <ModalConfirmarAccion

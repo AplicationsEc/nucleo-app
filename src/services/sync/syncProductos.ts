@@ -8,17 +8,16 @@ export const sincronizarProductos = async (
   const uuIds = productos
     .map((producto) => producto.proUuId)
     .filter((p) => p !== undefined);
-  console.log("uuIds => ", uuIds);
+
+  // await productosDB.resetearTablaProductos();
+
+  // return true;
   // Verificar si los UUIDs ya existen en la base de datos
-  const productosExistentes = await productosDB.obtenerProductosPorUuIds(uuIds);
+  const uuidsExistentes = await productosDB.obtenerProductosPorUuIds(uuIds);
 
-  const productosGuardados = productos.filter((p) =>
-    productosExistentes.includes(p.proUuId ?? "")
+  const productosGuardados = productos.filter(
+    (p) => !uuidsExistentes.includes(p.proUuId ?? "")
   );
-
-  console.log("productosGuardados => ", productosGuardados);
-
-  return true;
 
   try {
     for (const producto of productosGuardados) {

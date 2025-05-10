@@ -28,7 +28,8 @@ export const initDB = async () => {
       carrito INTEGER,
       color1 TEXT,
       color2 TEXT,
-      color3 TEXT
+      color3 TEXT,
+      sincronizado INTEGER
     );
   `);
   const columnas = await db.getAllAsync<{ name: string }>(
