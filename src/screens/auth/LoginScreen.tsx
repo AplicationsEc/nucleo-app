@@ -12,37 +12,24 @@ import { Dimensions } from "react-native";
 import { autenticarHuella } from "../../api/localAuth";
 import { useProudctosList } from "@/src/services/productos/useProudctosList";
 import { useProductosDBCreate } from "@/src/database/services/productos-db/useProductosDBCreate";
+import { productosDB } from "@/src/database/productosDB";
+import { sincronizarProductos } from "@/src/services/sync/syncProductos";
 
 const { width, height } = Dimensions.get("window");
 
 export default function LoginScreen() {
   const [formasLogin, setFormasLogin] = useState<string>("");
   const { data: productos } = useProudctosList();
-  const { mutateAsync: guardarProductoDB } = useProductosDBCreate();
   const { login } = useAuth();
 
   const handleLogin = async () => {
     const resultado = await autenticarHuella();
-    if (resultado) {
-      //   const exito = await sincronizarProductos();
-      // if (exito) login();
-      login();
+    if (resultado && productos) {
+      const exito = await sincronizarProductos(productos);
+      if (exito) login();
     }
   };
 
-  const sincronizarProductos = async (): Promise<boolean> => {
-    if (!productos) return false;
-
-    try {
-      for (const producto of productos) {
-        await guardarProductoDB(producto); // espera cada inserción
-      }
-      return true;
-    } catch (error) {
-      console.error("Error sincronizando productos", error);
-      return false;
-    }
-  };
   return (
     <ImageBackground
       source={require("@/assets/images/login.png")}

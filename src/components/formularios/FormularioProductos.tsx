@@ -20,6 +20,7 @@ import { Button } from "react-native-paper";
 import { useProductosDBCreate } from "@/src/database/services/productos-db/useProductosDBCreate";
 import ModalTomarFotoCargarFoto from "@/src/components/ui/ModalTomarFotoCargarFoto";
 import { useProductosDBActualizar } from "@/src/database/services/productos-db/useProductosDBActualizar";
+import { v4 as uuidv4 } from "uuid";
 interface Props {
   producto?: IProducto;
   onSuccess: () => void;
@@ -82,8 +83,9 @@ export default function FormularioProductos({
 
     if (editando) {
       // PUT a tu backend
-      console.log("Actualizando producto:", form);
-      actualizarProductoDB(form, {
+      const syncPro: IProducto = { ...form, sincronizado: false };
+      console.log("Actualizando producto:", syncPro);
+      actualizarProductoDB(syncPro, {
         onSuccess: () => {
           Alert.alert("Producto actualizado");
           onSuccess();
@@ -91,8 +93,13 @@ export default function FormularioProductos({
       });
     } else {
       // POST a tu backend
-      console.log("Creando producto:", form);
-      crearProductoDB(form, {
+      const syncPro: IProducto = {
+        ...form,
+        sincronizado: false,
+        proUuId: uuidv4(),
+      };
+      console.log("Creando producto:", syncPro);
+      crearProductoDB(syncPro, {
         onSuccess: () => {
           Alert.alert("Producto creado");
         },

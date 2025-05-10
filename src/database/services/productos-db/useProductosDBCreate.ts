@@ -11,7 +11,7 @@ export const useProductosDBCreate = (
   const queryClient = useQueryClient();
 
   return useMutation<number, Error, IProducto>({
-    mutationFn: productosDB.insertarProducto,
+    mutationFn: productosDB.insertarProductos,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: productosDBKeys.all() });
       //   toast({

@@ -1,5 +1,6 @@
 export interface IProducto {
   id: number;
+  proUuId?: string;
   nombre: string;
   descripcion?: string;
   precio: number;

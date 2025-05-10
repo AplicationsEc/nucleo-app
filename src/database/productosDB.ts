@@ -2,19 +2,20 @@ import { IProducto, IProductoDBEliminar } from "../models/IProducto";
 import db from "./db";
 
 export const productosDB = {
-  insertarProducto: async (producto: IProducto) => {
-    if (!db) throw new Error("La base de datos no ha sido inicializada");
+  insertarProductos: async (producto: IProducto) => {
+    if (!db) throw new Error("DB no inicializada");
 
     const values = [
       producto.nombre,
-      producto.descripcion || "",
+      producto.proUuId ?? "",
+      producto.descripcion ?? "",
       producto.precio,
-      producto.imagenUrl || "",
-      producto.categoria || "",
-      producto.stock,
-      producto.marca || "",
-      producto.modelo || "",
-      producto.tamano || "",
+      producto.imagenUrl ?? "",
+      producto.categoria ?? "",
+      producto.stock ?? 0,
+      producto.marca ?? "",
+      producto.modelo ?? "",
+      producto.tamano ?? "",
       producto.peso ?? 0,
       producto.alto ?? 0,
       producto.ancho ?? 0,
@@ -23,22 +24,26 @@ export const productosDB = {
       producto.descuento ?? 0,
       producto.favorito ? 1 : 0,
       producto.carrito ? 1 : 0,
-      producto.color1 || "",
-      producto.color2 || "",
-      producto.color3 || "",
+      producto.color1 ?? "",
+      producto.color2 ?? "",
+      producto.color3 ?? "",
     ];
 
-    const result = await db.runAsync(
-      `INSERT INTO productos (
-        nombre, descripcion, precio, imagenUrl, categoria, stock,
-        marca, modelo, tamano, peso, alto, ancho, largo,
-        activo, descuento, favorito, carrito, color1, color2, color3
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      values
-    );
-
-    console.log("Producto insertado, ID:", result.lastInsertRowId);
-    return result.lastInsertRowId;
+    try {
+      const result = await db.runAsync(
+        `INSERT INTO productos (
+          nombre, pro_uuid, descripcion, precio, imagenUrl, categoria, stock,
+          marca, modelo, tamano, peso, alto, ancho, largo, activo,
+          descuento, favorito, carrito, color1, color2, color3
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        values
+      );
+      console.log("Producto insertado con ID:", result.lastInsertRowId);
+      return result.lastInsertRowId;
+    } catch (error) {
+      console.error("Error al insertar producto:", error);
+      throw error;
+    }
   },
 
   actualizarProducto: async (producto: IProducto) => {
@@ -115,5 +120,31 @@ export const productosDB = {
 
     // console.log(`Producto eliminado. Cambios: ${result.changes}`);
     // return result.changes > 0;
+  },
+  resetearTablaProductos: async () => {
+    if (!db) throw new Error("DB no inicializada");
+
+    // Eliminar datos
+    await db.runAsync("DELETE FROM productos");
+
+    // Reiniciar AUTOINCREMENT
+    await db.runAsync("DELETE FROM sqlite_sequence WHERE name='productos'");
+  },
+
+  obtenerProductosPorUuIds: async (uuIds: string[]): Promise<string[]> => {
+    if (!db) throw new Error("DB no inicializada");
+
+    const resulaaaaaaa = await db.getFirstAsync<{ sql: string }>(
+      "SELECT sql FROM sqlite_master WHERE type='table' AND name='productos';"
+    );
+
+    console.log("Definición de la tabla productos:\n", resulaaaaaaa?.sql);
+    const result = await db.getAllAsync<IProducto>(
+      `SELECT pro_uuid FROM productos WHERE pro_uuid IN (${uuIds.map(() => "?").join(",")})`
+    );
+
+    const res = result.map((p) => p.proUuId).filter((p) => p !== undefined);
+
+    return res;
   },
 };

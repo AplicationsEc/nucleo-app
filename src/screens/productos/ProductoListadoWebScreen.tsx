@@ -3,7 +3,7 @@ import ProductoCard from "@/src/components/Productos/ProductoCard";
 import { useProudctosDBList } from "@/src/database/services/productos-db/useProudctosDBList";
 import { IProducto } from "@/src/models/IProducto";
 import { useProudctosList } from "@/src/services/productos/useProudctosList";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { View, Text, FlatList } from "react-native";
 
 export default function ProductoListadoWebScreen() {
@@ -12,10 +12,15 @@ export default function ProductoListadoWebScreen() {
   const [modalVisible, setModalVisible] = useState(false);
   const { data } = useProudctosDBList();
 
+  const productosSync = useMemo(() => {
+    if (!data) return [];
+    return data.filter((producto) => producto.sincronizado);
+  }, [data]);
+
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
       <FlatList
-        data={data}
+        data={productosSync}
         renderItem={({ item }) => (
           <ProductoCard
             producto={item}
