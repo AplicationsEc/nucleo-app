@@ -20,7 +20,7 @@ import { Button } from "react-native-paper";
 import { useProductosDBCreate } from "@/src/database/services/productos-db/useProductosDBCreate";
 import ModalTomarFotoCargarFoto from "@/src/components/ui/ModalTomarFotoCargarFoto";
 import { useProductosDBActualizar } from "@/src/database/services/productos-db/useProductosDBActualizar";
-import { v4 as uuidv4 } from "uuid";
+import uuid from "react-native-uuid";
 interface Props {
   producto?: IProducto;
   onSuccess: () => void;
@@ -96,9 +96,9 @@ export default function FormularioProductos({
       const syncPro: IProducto = {
         ...form,
         sincronizado: false,
-        proUuId: uuidv4(),
+        proUuId: uuid.v4() as string,
       };
-      console.log("Creando producto:", syncPro);
+
       crearProductoDB(syncPro, {
         onSuccess: () => {
           Alert.alert("Producto creado");

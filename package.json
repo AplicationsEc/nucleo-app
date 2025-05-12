@@ -66,6 +66,7 @@
     "expo-keep-awake": "~13.0.2",
     "expo-linear-gradient": "~13.0.2",
     "expo-linking": "~6.3.1",
+    "expo-local-authentication": "~14.0.1",
     "expo-location": "~17.0.1",
     "expo-router": "~3.5.23",
     "expo-secure-store": "~13.0.2",
@@ -109,14 +110,14 @@
     "react-native-tab-view": "^3.5.2",
     "react-native-table-component": "^1.2.2",
     "react-native-toast-message": "2.2.0",
+    "react-native-uuid": "^2.0.3",
     "react-native-web": "^0.19.12",
     "react-native-zip-archive": "^7.0.1",
     "react-native-zoom-reanimated": "^1.4.5",
     "sonner-native": "^0.14.2",
     "uuid": "^10.0.0",
     "zod": "^3.23.8",
-    "zustand": "^4.5.4",
-    "expo-local-authentication": "~14.0.1"
+    "zustand": "^4.5.4"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
