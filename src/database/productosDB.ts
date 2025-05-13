@@ -88,7 +88,6 @@ export const productosDB = {
       values
     );
 
-    console.log("Producto actualizado con ID:", producto);
     return producto.id;
   },
 
