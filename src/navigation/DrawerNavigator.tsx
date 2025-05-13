@@ -43,12 +43,7 @@ export default function DrawerNavigator() {
         name="Productos"
         component={ProductosTabs}
         options={{
-          title: "Productos",
-          headerShown: true,
-          headerStyle: {
-            backgroundColor: colors.background.primary,
-          },
-          headerTintColor: colors.text.primary,
+          headerShown: false,
         }}
       />
       <Drawer.Screen

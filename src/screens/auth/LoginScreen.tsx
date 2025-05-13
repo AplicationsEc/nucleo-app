@@ -11,9 +11,14 @@ import { Button, Card, Icon, Text, TextInput } from "react-native-paper";
 import { Dimensions } from "react-native";
 import { autenticarHuella } from "../../api/localAuth";
 import { useProudctosList } from "@/src/services/productos/useProudctosList";
-import { useProductosDBCreate } from "@/src/database/services/productos-db/useProductosDBCreate";
-import { productosDB } from "@/src/database/productosDB";
-import { sincronizarProductos } from "@/src/services/sync/syncProductos";
+import * as FileSystem from "expo-file-system";
+
+import {
+  _DESCARGAR_IMAGENES_Y_ACTUALIZAR_PATHS,
+  sincronizarProductos,
+} from "@/src/services/sync/syncProductos";
+import { _GUARDAR_DATA_JSON } from "@/src/services/exportar/archivosExport";
+import { _COMPRIMIR_DATA } from "@/src/services/exportar/archivosExport";
 
 const { width, height } = Dimensions.get("window");
 
@@ -26,8 +31,22 @@ export default function LoginScreen() {
     const resultado = await autenticarHuella();
     if (resultado && productos) {
       const exito = await sincronizarProductos(productos);
-      if (exito) login();
+      if (exito) {
+        await exportarTodo();
+        login();
+      }
     }
+  };
+
+  const exportarTodo = async () => {
+    if (!productos) return;
+    const pathAssets = FileSystem.documentDirectory + "assets/";
+
+    // 1. Descargar imágenes y añadir imagenUrlLocal
+    const productosActualizados = await _DESCARGAR_IMAGENES_Y_ACTUALIZAR_PATHS(
+      productos,
+      pathAssets
+    );
   };
 
   return (

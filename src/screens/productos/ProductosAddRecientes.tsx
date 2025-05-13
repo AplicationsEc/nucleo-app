@@ -1,9 +1,11 @@
+import { AppContainer } from "@/src/components/AppContainer";
+import HeaderProductos from "@/src/components/Productos/HeaderProductos";
 import ModalProducto from "@/src/components/Productos/ModalProducto";
 import ProductoCard from "@/src/components/Productos/ProductoCard";
 import { useProudctosDBList } from "@/src/database/services/productos-db/useProudctosDBList";
 import { IProducto } from "@/src/models/IProducto";
 import { useMemo, useState } from "react";
-import { View, Text, FlatList } from "react-native";
+import { View, Text, FlatList, SafeAreaView } from "react-native";
 
 export default function ProductosAddRecientes() {
   const [productoSeleccionado, setProductoSeleccionado] =
@@ -17,7 +19,8 @@ export default function ProductosAddRecientes() {
   }, [data]);
 
   return (
-    <View style={{ flex: 1, backgroundColor: "white" }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "white", paddingTop: 40 }}>
+      <HeaderProductos />
       <FlatList
         data={productosSync}
         renderItem={({ item }) => (
@@ -39,6 +42,6 @@ export default function ProductosAddRecientes() {
         producto={productoSeleccionado}
         onClose={() => setModalVisible(false)}
       />
-    </View>
+    </SafeAreaView>
   );
 }

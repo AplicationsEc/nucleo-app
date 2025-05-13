@@ -11,6 +11,7 @@ export const productosDB = {
       producto.descripcion ?? "",
       producto.precio,
       producto.imagenUrl ?? "",
+      producto.imagenUrlLocal ?? "",
       producto.categoria ?? "",
       producto.stock ?? 0,
       producto.marca ?? "",
@@ -33,10 +34,10 @@ export const productosDB = {
     try {
       const result = await db.runAsync(
         `INSERT INTO productos (
-          nombre, proUuId, descripcion, precio, imagenUrl, categoria, stock,
+          nombre, proUuId, descripcion, precio, imagenUrl, imagenUrlLocal, categoria, stock,
           marca, modelo, tamano, peso, alto, ancho, largo, activo,
           descuento, favorito, carrito, color1, color2, color3, sincronizado
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)`,
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)`,
         values
       );
       console.log("Producto insertado con ID:", result.lastInsertRowId);
@@ -57,6 +58,7 @@ export const productosDB = {
       producto.descripcion || "",
       producto.precio,
       producto.imagenUrl || "",
+      producto.imagenUrlLocal || "",
       producto.categoria || "",
       producto.stock,
       producto.marca || "",
@@ -79,7 +81,7 @@ export const productosDB = {
 
     await db.runAsync(
       `UPDATE productos SET
-        nombre = ?, descripcion = ?, precio = ?, imagenUrl = ?, categoria = ?, stock = ?,
+        nombre = ?, descripcion = ?, precio = ?, imagenUrl = ?, imagenUrlLocal = ?, categoria = ?, stock = ?,
         marca = ?, modelo = ?, tamano = ?, peso = ?, alto = ?, ancho = ?, largo = ?,
         activo = ?, descuento = ?, favorito = ?, carrito = ?, color1 = ?, color2 = ?, color3 = ?, sincronizado = ?
         WHERE proUuId = ?`,

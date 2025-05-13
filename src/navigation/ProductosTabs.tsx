@@ -59,6 +59,7 @@ export default function ProductosTabs() {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="list-circle-outline" size={size} color={color} />
           ),
+          headerShown: false,
         }}
       />
     </Tab.Navigator>

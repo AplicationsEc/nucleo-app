@@ -13,6 +13,7 @@ export const initDB = async () => {
       descripcion TEXT,
       precio REAL,
       imagenUrl TEXT,
+      imagenUrlLocal TEXT,
       categoria TEXT,
       stock INTEGER,
       marca TEXT,

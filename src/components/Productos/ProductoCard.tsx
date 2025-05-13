@@ -40,8 +40,11 @@ export default function ProductoCard({
         onPress={onPress}
         activeOpacity={0.8}
       >
-        {producto.imagenUrl ? (
-          <Image source={{ uri: producto.imagenUrl }} style={styles.imagen} />
+        {producto.imagenUrlLocal ? (
+          <Image
+            source={{ uri: producto.imagenUrlLocal }}
+            style={styles.imagen}
+          />
         ) : (
           <View style={styles.placeholder}>
             <Ionicons name="image-outline" size={40} color="#ccc" />

@@ -5,6 +5,7 @@ export interface IProducto {
   descripcion?: string;
   precio: number;
   imagenUrl?: string;
+  imagenUrlLocal?: string;
   categoria?: string;
   stock: number;
   marca?: string;
