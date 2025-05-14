@@ -1,6 +1,13 @@
 import React, { useState } from "react";
-import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
-
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  Alert,
+} from "react-native";
+import * as FileSystem from "expo-file-system";
 import { Ionicons } from "@expo/vector-icons";
 import { IProducto } from "@/src/models/IProducto";
 import { useProductosDBEliminar } from "@/src/database/services/productos-db/useProductosDBEliminar";
@@ -27,7 +34,17 @@ export default function ProductoCard({
     setModalVisible(true);
   };
   const handleEliminar = () => {
-    eliminarProducto({ id: producto.id });
+    eliminarProducto(
+      { id: producto.id },
+      {
+        onSuccess: () => {
+          if (producto.imagenUrlLocal) {
+            FileSystem.deleteAsync(producto.imagenUrlLocal);
+          }
+          Alert.alert("Producto eliminado");
+        },
+      }
+    );
     setModalVisible(false);
   };
   const handleEditar = () => {

@@ -53,7 +53,7 @@ export default function ModalSelectorConFiltro({
                 key={item.value}
                 style={styles.item}
                 onPress={() => {
-                  onSelect(item.value);
+                  onSelect(item.label);
                   onClose();
                   setSearch("");
                 }}

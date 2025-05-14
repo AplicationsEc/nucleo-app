@@ -32,21 +32,16 @@ export default function LoginScreen() {
     if (resultado && productos) {
       const exito = await sincronizarProductos(productos);
       if (exito) {
-        await exportarTodo();
+        await importarTodo();
         login();
       }
     }
   };
 
-  const exportarTodo = async () => {
+  const importarTodo = async () => {
     if (!productos) return;
-    const pathAssets = FileSystem.documentDirectory + "assets/";
 
-    // 1. Descargar imágenes y añadir imagenUrlLocal
-    const productosActualizados = await _DESCARGAR_IMAGENES_Y_ACTUALIZAR_PATHS(
-      productos,
-      pathAssets
-    );
+    await _DESCARGAR_IMAGENES_Y_ACTUALIZAR_PATHS(productos);
   };
 
   return (

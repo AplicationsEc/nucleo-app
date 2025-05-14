@@ -8,7 +8,7 @@ export const productosAPI = {
       if (!response.ok) throw new Error("Error al obtener los productos");
 
       const data = await response.json();
-      return data.data ?? []; // Ajustá esto si tu JSON no usa clave "data"
+      return data ?? []; // Ajustá esto si tu JSON no usa clave "data"
     } catch (error) {
       console.error("Error al obtener los productos:", error);
       return [];
@@ -20,7 +20,7 @@ export const productosAPI = {
       if (!response.ok) throw new Error("Error al obtener el producto");
 
       const data = await response.json();
-      const productos: IProducto[] = data.data ?? [];
+      const productos: IProducto[] = data ?? [];
 
       return productos.find((item) => item.id === id) || null;
     } catch (error) {
@@ -35,7 +35,7 @@ export const productosAPI = {
       if (!response.ok) throw new Error("Error al obtener las categorías");
 
       const data = await response.json();
-      const productos: IProducto[] = data.data ?? [];
+      const productos: IProducto[] = data ?? [];
 
       const categories = [...new Set(productos.map((p) => p.categoria))];
       return categories.filter((c): c is string => !!c);

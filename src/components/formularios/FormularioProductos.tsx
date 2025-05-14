@@ -21,6 +21,8 @@ import { useProductosDBCreate } from "@/src/database/services/productos-db/usePr
 import ModalTomarFotoCargarFoto from "@/src/components/ui/ModalTomarFotoCargarFoto";
 import { useProductosDBActualizar } from "@/src/database/services/productos-db/useProductosDBActualizar";
 import uuid from "react-native-uuid";
+import * as FileSystem from "expo-file-system";
+
 interface Props {
   producto?: IProducto;
   onSuccess: () => void;
@@ -41,7 +43,7 @@ export default function FormularioProductos({
   onSuccess,
   editando,
 }: Props) {
-  //   const editando = !!producto;
+  const [uuIdNuevoProducto, setUuIdNuevoProducto] = useState<string>();
   const [form, setForm] = useState<IProducto>(producto ?? productoVacio);
   const [modalTomarFotoCargarFotoVisible, setModalTomarFotoCargarFotoVisible] =
     useState(false);
@@ -56,11 +58,33 @@ export default function FormularioProductos({
   useEffect(() => {
     if (producto) {
       setForm(producto);
+    } else {
+      setUuIdNuevoProducto(uuid.v4() as string);
     }
   }, [producto]);
 
   const handleChange = (field: keyof IProducto, value: any) => {
     setForm({ ...form, [field]: value });
+  };
+
+  // Reutilizable para ambas funciones
+  const copiarImagenAStorage = async (
+    uriOrigen: string,
+    nombreArchivo: string
+  ): Promise<string> => {
+    const destinoDir =
+      "file:///data/user/0/com.applicationsec.primeapp/cache/ImagePicker/";
+    const destinoFinal = destinoDir + nombreArchivo;
+
+    // Validar que carpeta exista
+    const info = await FileSystem.getInfoAsync(destinoDir);
+    if (!info.exists) {
+      await FileSystem.makeDirectoryAsync(destinoDir, { intermediates: true });
+    }
+
+    await FileSystem.copyAsync({ from: uriOrigen, to: destinoFinal });
+
+    return destinoFinal;
   };
 
   const pickImage = async () => {
@@ -69,8 +93,38 @@ export default function FormularioProductos({
       quality: 0.7,
     });
 
-    if (!result.canceled) {
-      handleChange("imagenUrl", result.assets[0].uri);
+    if (!result.canceled && uuIdNuevoProducto) {
+      const originalUri = result.assets[0].uri;
+      const fileName = `${uuIdNuevoProducto}.jpeg`;
+
+      const rutaFinal = await copiarImagenAStorage(originalUri, fileName);
+
+      setForm((prev) => ({
+        ...prev,
+        imagenUrlLocal: rutaFinal,
+        imagenUrl: `https://raw.githubusercontent.com/felipeAlmEspa/luxeApi/main/assets/${fileName}`,
+      }));
+      setModalTomarFotoCargarFotoVisible(false);
+    }
+  };
+
+  const tomarFoto = async () => {
+    const result = await ImagePicker.launchCameraAsync({
+      allowsEditing: true,
+      quality: 0.7,
+    });
+
+    if (!result.canceled && uuIdNuevoProducto) {
+      const originalUri = result.assets[0].uri;
+      const fileName = `${uuIdNuevoProducto}.jpeg`;
+
+      const rutaFinal = await copiarImagenAStorage(originalUri, fileName);
+
+      setForm((prev) => ({
+        ...prev,
+        imagenUrlLocal: rutaFinal,
+        imagenUrl: `https://raw.githubusercontent.com/felipeAlmEspa/luxeApi/main/assets/${fileName}`,
+      }));
       setModalTomarFotoCargarFotoVisible(false);
     }
   };
@@ -96,12 +150,13 @@ export default function FormularioProductos({
       const syncPro: IProducto = {
         ...form,
         sincronizado: false,
-        proUuId: uuid.v4() as string,
+        proUuId: uuIdNuevoProducto,
       };
 
       crearProductoDB(syncPro, {
         onSuccess: () => {
           Alert.alert("Producto creado");
+          setUuIdNuevoProducto(uuid.v4() as string);
         },
         onError: (error) => {
           Alert.alert("Error al crear producto");
@@ -115,21 +170,8 @@ export default function FormularioProductos({
 
   const obtenerColor = useCallback((color?: string) => {
     if (!color) return null;
-    return _COLORES_BASICOS.find((c) => c.value === color);
+    return _COLORES_BASICOS.find((c) => c.label === color);
   }, []);
-
-  const tomarFoto = async () => {
-    const result = await ImagePicker.launchCameraAsync({
-      allowsEditing: true,
-      quality: 0.7,
-    });
-
-    if (!result.canceled) {
-      const uri = result.assets[0].uri;
-      setForm((prev) => ({ ...prev, imagenUrl: uri }));
-      setModalTomarFotoCargarFotoVisible(false);
-    }
-  };
 
   const handleTomarFoto = () => {
     setModalTomarFotoCargarFotoVisible(true);
@@ -139,7 +181,7 @@ export default function FormularioProductos({
     <ScrollView contentContainerStyle={styles.container}>
       <TouchableOpacity onPress={handleTomarFoto} style={styles.imagePicker}>
         {form.imagenUrl ? (
-          <Image source={{ uri: form.imagenUrl }} style={styles.imagen} />
+          <Image source={{ uri: form.imagenUrlLocal }} style={styles.imagen} />
         ) : (
           <Ionicons name="camera-outline" size={50} color="#888" />
         )}
@@ -240,7 +282,7 @@ export default function FormularioProductos({
           onValueChange={(val) => handleChange("activo", val)}
         />
       </View>
-      <View style={styles.switchRow}>
+      {/* <View style={styles.switchRow}>
         <Text>Favorito</Text>
         <Switch
           value={form.favorito ?? false}
@@ -253,7 +295,7 @@ export default function FormularioProductos({
           value={form.carrito ?? false}
           onValueChange={(val) => handleChange("carrito", val)}
         />
-      </View>
+      </View> */}
       <View style={{ paddingBottom: 30 }}>
         <TouchableOpacity onPress={handleGuardar} style={_BOTONES.PRIMARY}>
           <Text style={styles.botonTexto}>

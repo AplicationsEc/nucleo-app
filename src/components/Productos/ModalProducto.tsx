@@ -34,13 +34,13 @@ export default function ModalProducto({ visible, producto, onClose }: Props) {
           <TouchableOpacity onPress={onClose} style={styles.btnCerrar}>
             <Ionicons name="close" size={24} color="#333" />
           </TouchableOpacity>
-          {producto.imagenUrl && (
+          {producto.imagenUrlLocal && (
             <View>
               <TouchableOpacity
                 onPress={() => setModalImagenCompletaVisible(true)}
               >
                 <Image
-                  source={{ uri: producto.imagenUrl }}
+                  source={{ uri: producto.imagenUrlLocal }}
                   style={styles.imagen}
                 />
               </TouchableOpacity>

@@ -5,7 +5,6 @@ export const sincronizarProductos = async (
   productos: IProducto[]
 ): Promise<boolean> => {
   if (!productos) return false;
-
   const uuIds = productos
     .map((producto) => producto.proUuId)
     .filter((p) => p !== undefined);
@@ -30,13 +29,13 @@ export const sincronizarProductos = async (
   }
 };
 
-// recibe productos y la carpeta destino como "file:///.../assets/"
 export const _DESCARGAR_IMAGENES_Y_ACTUALIZAR_PATHS = async (
-  productos: IProducto[],
-  carpetaDestino: string
-): Promise<IProducto[]> => {
-  const nuevosProductos: IProducto[] = [];
-  // 🔐 Asegurar que carpeta destino existe antes de cualquier descarga
+  productos: IProducto[]
+): Promise<void> => {
+  const carpetaDestino =
+    "file:///data/user/0/com.applicationsec.primeapp/cache/ImagePicker/";
+
+  // Asegurarse de que la carpeta exista
   const carpetaInfo = await FileSystem.getInfoAsync(carpetaDestino);
   if (!carpetaInfo.exists) {
     await FileSystem.makeDirectoryAsync(carpetaDestino, {
@@ -46,10 +45,8 @@ export const _DESCARGAR_IMAGENES_Y_ACTUALIZAR_PATHS = async (
 
   for (const producto of productos) {
     const urlImagen = producto.imagenUrl;
-    if (!urlImagen) {
-      return [];
-    }
-    if (urlImagen.startsWith("http")) {
+
+    if (urlImagen) {
       const nombreArchivo = urlImagen.split("/").pop(); // ej: "3.jpg"
       const rutaLocal = carpetaDestino + nombreArchivo;
 
@@ -57,29 +54,11 @@ export const _DESCARGAR_IMAGENES_Y_ACTUALIZAR_PATHS = async (
         const { exists } = await FileSystem.getInfoAsync(rutaLocal);
         if (!exists) {
           await FileSystem.downloadAsync(urlImagen, rutaLocal);
-          console.log(`Imagen descargada: ${rutaLocal}`);
+          console.log(`✅ Imagen descargada: ${rutaLocal}`);
         }
-
-        // Añadir el nuevo campo imagenUrlLocal
-        nuevosProductos.push({
-          ...producto,
-          imagenUrlLocal: rutaLocal,
-        });
       } catch (err) {
-        console.warn(`Error descargando imagen: ${urlImagen}`, err);
-        nuevosProductos.push({
-          ...producto,
-          imagenUrlLocal: "", // si falla, deja vacío
-        });
+        console.warn(`⚠️ Error descargando imagen: ${urlImagen}`, err);
       }
-    } else {
-      // si ya es local, simplemente ponerla también en imagenUrlLocal
-      nuevosProductos.push({
-        ...producto,
-        imagenUrlLocal: producto.imagenUrl,
-      });
     }
   }
-
-  return nuevosProductos;
 };

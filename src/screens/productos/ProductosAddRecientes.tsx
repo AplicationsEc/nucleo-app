@@ -20,7 +20,7 @@ export default function ProductosAddRecientes() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white", paddingTop: 40 }}>
-      <HeaderProductos />
+      <HeaderProductos titulo="Pendientes de subir" verBtnSubir={true} />
       <FlatList
         data={productosSync}
         renderItem={({ item }) => (

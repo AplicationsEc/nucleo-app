@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   Image,
   Alert,
+  SafeAreaView,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { Ionicons } from "@expo/vector-icons";
@@ -20,6 +21,7 @@ import { Button } from "react-native-paper";
 import { useProductosDBCreate } from "@/src/database/services/productos-db/useProductosDBCreate";
 import ModalTomarFotoCargarFoto from "@/src/components/ui/ModalTomarFotoCargarFoto";
 import FormularioProductos from "@/src/components/formularios/FormularioProductos";
+import HeaderProductos from "@/src/components/Productos/HeaderProductos";
 interface Props {
   route: {
     params?: {
@@ -29,7 +31,7 @@ interface Props {
   navigation: any;
 }
 
-export default function ProductoEditarScreen({ route, navigation }: Props) {
+export default function ProductoNuevoScreen({ route, navigation }: Props) {
   useEffect(() => {
     navigation.setOptions({
       title: "Nuevo Producto",
@@ -40,11 +42,14 @@ export default function ProductoEditarScreen({ route, navigation }: Props) {
     navigation.goBack();
   };
   return (
-    <FormularioProductos
-      onSuccess={handleSuccess}
-      editando={false}
-      producto={route.params?.producto}
-    />
+    <SafeAreaView style={{ flex: 1, backgroundColor: "white", paddingTop: 40 }}>
+      <HeaderProductos verBtnSubir={false} titulo="Nuevo producto" />
+      <FormularioProductos
+        onSuccess={handleSuccess}
+        editando={false}
+        producto={route.params?.producto}
+      />
+    </SafeAreaView>
   );
 }
 

@@ -40,11 +40,11 @@ export const _COPIAR_IMAGENES_LOCALES = async (productos: IProducto[]) => {
   if (!existe.exists) await FileSystem.makeDirectoryAsync(carpetaAssets);
 
   for (const producto of productos) {
-    if (producto.imagenUrl?.startsWith("file://")) {
-      const nombreArchivo = producto.imagenUrl?.split("/").pop();
+    if (producto.imagenUrlLocal?.startsWith("file://")) {
+      const nombreArchivo = producto.proUuId + ".jpeg";
       const destino = carpetaAssets + nombreArchivo;
       await FileSystem.copyAsync({
-        from: producto.imagenUrl,
+        from: producto.imagenUrlLocal,
         to: destino,
       });
     }
